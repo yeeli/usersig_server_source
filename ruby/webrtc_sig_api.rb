@@ -10,7 +10,7 @@ class WebrtcSigApi
     @sdk_app_id, @private_key, @public_key = sdk_app_id, private_key, public_key
   end
 
-  def gen_user_sign(user_id, account_type = 0, expire = 300)
+  def gen_user_sig(user_id, account_type = 0, expire = 300)
     json = {
       'TLS.account_type' => account_type.to_s,
       'TLS.identifier' => user_id.to_s,
@@ -20,7 +20,7 @@ class WebrtcSigApi
       'TLS.version' => '201512300000',
       'TLS.time' => Time.now.to_i.to_s
     }
-    content = gen_sign_content_for_user_sign(json)
+    content = gen_sign_content_for_user_sig(json)
     signature = sign(content)
     json['TLS.sig'] = Base64.strict_encode64(signature)
     if json['TLS.sig'].nil?
@@ -115,7 +115,7 @@ class WebrtcSigApi
   end
 
 
-  def gen_sign_content_for_user_sign(json)
+  def gen_sign_content_for_user_sig(json)
     return ['TLS.appid_at_3rd', 'TLS.account_type', 'TLS.identifier', 'TLS.sdk_appid', 'TLS.time', 'TLS.expire_after'].map do  |k|
       v = json[k]
       "#{k}:#{v}\n"
@@ -156,7 +156,7 @@ p "private_map_key:"
 pmk = api.gen_private_map_key(user_id, room_id)
 p pmk
 p "user_sig:"
-us = api.gen_user_sign(user_id)
+us = api.gen_user_sig(user_id)
 p us
 p "verify private_map_key:"
 p api.verify_private_map_key(pmk, user_id)
