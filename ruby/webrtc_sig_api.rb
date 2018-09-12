@@ -52,9 +52,9 @@ class WebrtcSigApi
   def gen_private_map_key(user_id, room_id, expire = 300)
     userbuf = ""
     userbuf << [0].pack('C1') #
-    idlen =  user_id.length
+    idlen =  user_id.to_s.length
     userbuf << [idlen].pack('n')
-    userbuf << [user_id].pack("a#{idlen}")
+    userbuf << [user_id.to_s].pack("a#{idlen}")
     userbuf << [sdk_app_id.to_i].pack("N")
     userbuf << [room_id].pack('N')
     userbuf << [Time.now.to_i + expire].pack('N')
